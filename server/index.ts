@@ -6,7 +6,7 @@ import axios from 'axios';
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors('*'));
 
 const BASE_URL = process.env.COMPANY_URL;
 
