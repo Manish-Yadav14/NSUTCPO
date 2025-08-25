@@ -13,6 +13,7 @@ function App() {
   const fetchAllCompanyDetails = async () => {
     const {data} = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/totalCompaniesCount`);
     const companyCnt = data.total;
+    console.log(companyCnt)
 
     const requests = [];
 
@@ -62,13 +63,18 @@ function App() {
     return matchesSearch && matchesType && matchesBranch;
   });
 
-  const allBranches = Array.from(
-    new Set(companies.flatMap(company => company["Branches Allowed"]))
-  ).sort();
+ const allBranches = Array.from(
+  new Set(
+    companies.flatMap(company => Array.isArray(company["Branches Allowed"]) ? company["Branches Allowed"] : [])
+  )
+).sort();
 
-  const allTypes = Array.from(
-    new Set(companies.map(company => company.Type))
-  ).sort();
+const allTypes = Array.from(
+  new Set(
+    companies.map(company => company?.Type || "")
+  )
+).filter(type => type !== "").sort();
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -102,10 +108,11 @@ function App() {
             <select
               className="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               value={selectedType}
+              key={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
             >
               <option value="">All Types</option>
-              {allTypes.map(type => (
+              {allTypes.length>0 && allTypes.map(type => (
                 <option key={type} value={type}>{type}</option>
               ))}
             </select>
@@ -116,7 +123,7 @@ function App() {
               onChange={(e) => setSelectedBranch(e.target.value)}
             >
               <option value="">All Branches</option>
-              {allBranches.map(branch => (
+              {allBranches.length>0 &&  allBranches.map(branch => (
                 <option key={branch} value={branch}>{branch}</option>
               ))}
             </select>
@@ -124,7 +131,7 @@ function App() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredCompanies.map((company) => (
+          {filteredCompanies && filteredCompanies.length>0 && filteredCompanies?.map((company) => (
             <CompanyCard key={company.id} company={company} />
           ))}
         </div>

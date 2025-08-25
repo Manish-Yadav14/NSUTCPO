@@ -55,9 +55,9 @@ export function CompanyCard({ company }: CompanyCardProps) {
       <div className="mt-4">
         <h4 className="font-medium text-gray-700">Eligible Branches:</h4>
         <div className="mt-2 flex flex-wrap gap-2">
-          {company["Branches Allowed"].map((branch,index) => (
+          {company["Branches Allowed"] && company["Branches Allowed"].map((branch,index) => (
             <span
-              key={index}
+              key={index + branch}
               className="px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-sm"
             >
               {branch}
